@@ -109,7 +109,7 @@ StardustPermutation <- function(group=c("sudo","docker"), scratch.folder,
   #executing the docker job
   params <- paste("--cidfile ",data.folder,"/dockerID -v ",scrat_tmp.folder,
     ":/scratch -v ", data.folder, 
-    ":/data -d docker.io/giovannics/stardustpermutation Rscript /home/main.R ",
+    ":/data -d docker.io/giovannics/spatial2020seuratpermutation Rscript /home/main.R ",
     matrixName," ",tissuePositionFile," ",profileDistance," ",spotDistance," ", 
   spaceWeight," ",nPerm," ",permAtTime," ",percent," ",format," ",separator,
     " ",logTen," ",pcaDimensions," ",seed," ",sparse,sep="")
