@@ -52,7 +52,7 @@ StartdustConfigurations <- function(group=c("sudo","docker"), scratch.folder,
   uno <- ""
   for(i in c(0,0.25,0.5,0.75,1)){
     StardustPermutation(group,scratch.folder,file, tissuePosition, 
-      profileDistance, spotDistance,spaceWeight = i, nPerm, permAtTime, percent, separator,
+      spaceWeight = i, nPerm, permAtTime, percent, separator,
       logTen, pcaDimensions, seed, sparse, format)
     cluster.path <- paste(data.folder=dirname(file), "Results", strsplit(basename(file),"\\.")[[1]][1], sep="/")
     cluster <- as.numeric(list.dirs(cluster.path, full.names = FALSE, recursive = FALSE))
