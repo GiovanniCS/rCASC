@@ -1,38 +1,54 @@
-# Stardust
-Stardust is distributed as a method of the R package rCASC. The main reason is the ability to expoit its built-in stability score computation feature. In this workflow we well see how to set up the environment end execute an example.
+# rCASC
+Since the end of the 90's omics high-throughput technologies have generated an enormous amount of data, reaching today an exponential growth phase. Analysis of omics big data is a revolutionary means of understanding the molecular basis of disease regulation and susceptibility, and this resource is accessible to the biological/medical community via bioinformatics frameworks. However, because of the fast evolution of computation tools and omics methods, the [*reproducibility crisis*](https://en.wikipedia.org/wiki/Replication_crisis) is becoming a very important issue [[*Nature, 6 July 2018*](https://www.nature.com/collections/prbfkwmwvz)] and there is a mandatory need to to guarantee robust and reliable results to the research community [[*Global Engage Blog*](http://www.global-engage.com/life-science/reproducibility-computational-biology/)].
+
+Our group is deeply involved in developing workflows that guarantee both **functional** (i.e. the information about data and the utilized tools are saved in terms of meta-data) and **computation** reproducibility (i.e. the real image of the computation environment used to generate the data is stored). For this reason we have founded a bioinformatics community called [*reproducible-bioinformatics.org*](http://www.reproducible-bioinformatics.org/) [*Kulkarni et al. BMC Bioinformatics*](https://rdcu.be/9gMq) designed to provide to the biological community a reproducible bioinformatics ecosystem  [[*Beccuti et al. Bioinformatics 2018*](https://academic.oup.com/bioinformatics/article/34/5/871/4562334)]. 
+
+rCASC, Cluster Analysis of Single Cells, is part of the [*reproducible-bioinformatics.org*](http://www.reproducible-bioinformatics.org/) project and provides single cell analysis functionalities within the reproducible rules described by Sandve et al. [[*PLoS Comp Biol. 2013*](http://journals.plos.org/ploscompbiol/article?id=10.1371/journal.pcbi.1003285)]. rCASC is designed to provide a complete workflow (Figure 1) for cell-subpopulation discovery. 
+rCASC was published by Alessandri et al. in [GigaScience in 2019](https://academic.oup.com/gigascience/article/8/9/giz105/5565135)
+
+![Fig. 1:rCASC workflow](fig1.png)
+
+**rCASC** is registed with RRID SCR_017005 at [*SciCrunch*](scicrunch.org). **rCASC** is part of  [*Elixir bio.tools*](https://bio.tools/).
+
 
 
 
 ## Installation
-```bash
-#check if docker is installed
-docker -v
-docker pull giovannics/spatial2020seuratpermutation
-docker pull repbioinfo/seuratanalysis
-mkdir -p example/scratch && cd example
-wget https://github.com/GiovanniCS/StardustData/raw/main/Datasets/MouseKidney/filtered_expression_matrix.txt.zip
-wget https://raw.githubusercontent.com/GiovanniCS/StardustData/main/Datasets/MouseKidney/spot_coordinates.txt
-unzip filtered_expression_matrix.txt.zip
-rm -rf __MACOSX
-rm filtered_expression_matrix.txt.zip
-R
+
 ```
-```R
 install.packages("devtools")
 library(devtools)
-install_github("GiovanniCS/rCASC")
-library(rCASC)
-scratch.folder <- paste(getwd(),"/scratch",sep="")
-file <- paste(getwd(),"/filtered_expression_matrix.txt",sep="")
-tissuePosition <- paste(getwd(),"/spot_coordinates.txt",sep="")
-StardustPermutation(group="docker",scratch.folder = scratch.folder,nPerm=80,
-    file=file, tissuePosition=tissuePosition, spaceWeight=j, permAtTime=8, 
-    percent=10, separator="\t", logTen=0, pcaDimensions=5, seed=111)
-cluster.path <- paste(data.folder=dirname(file), "Results", strsplit(basename(file),"\\.")[[1]][1], sep="/")
-cluster <- as.numeric(list.dirs(cluster.path, full.names = FALSE, recursive = FALSE))
-permAnalysisSeurat(group="docker",scratch.folder = scratch.folder,file=file, nCluster=cluster,separator="\t",sp=0.8)
+install_github("kendomaniac/rCASC", ref="master")
 ```
 
-## Results 
-You can now explore the content of example/Results to find the stability scores and
-cluster id assignments.
+## Requirements
+
+You need to have docker installed on your linux machine, for more info see this document: https://docs.docker.com/engine/installation/. 
+
+The functions in rCASC package require that user is sudo or part of a docker group. See the following document for more info: https://docs.docker.com/engine/installation/linux/ubuntulinux/#/manage-docker-as-a-non-root-user
+
+IMPORTANT The first time casc is installed the downloadContainers needs to be executed to download to the local repository the containers that are needed for the use of docker4seq
+
+```
+library(rCASC)
+downloadContainers()
+```
+
+More info at [**rCASC web site**](https://kendomaniac.github.io/rCASC/)
+
+**IMPORTANT** In case you are running rCASC in a virtual linux machine is important to assign to the machine at least 8 Gb RAM
+
+## New features
+
+We have recently implemented a new set of functions allowing the functional mining of single cell subpopulations, i.e. clusters detected using rCASC tool, exploiting sparsely connected autoencoders (SCAs).
+The full description of this new module is available  [**here**](https://kendomaniac.github.io/rCASC/articles/rCASC_vignette.html#section-10-mining-clusters-with-sparsely-connected-autoencoders-scas-)
+
+## Roles to write an rCASC function
+Results generated by within docker container must be saved in *DataFolder/Results/matrixName/nCluster*.
+The docker schema expect the *DataFolder/Results/matrixName* folder is mounted as */scratch*. 
+The count matrix presents in *DataFolder* must be copied in  *DataFolder/Results/matrixName*
+In the docker, absolute paths are required to move between folders.
+In the docker, scripts are usually located in */home*.
+
+
+
